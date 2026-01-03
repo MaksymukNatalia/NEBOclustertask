@@ -13,5 +13,6 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
     - name: Build and run tests
-      run: mvn test -Dgroups=!db
+      run: mvn test -DskipTags=db
+
 
