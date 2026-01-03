@@ -30,4 +30,8 @@ jobs:
       uses: tsickert/discord-webhook@v7.0.0
       with:
         webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-        content: "Test"
+        content: |
+            ❗ Deployment success!
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            🔗 [View workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
