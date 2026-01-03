@@ -1,1 +1,2 @@
 # NEBOclustertask
+[![Build and push Docker image to Dockerhub](https://github.com/MaksymukNatalia/NEBOclustertask/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/MaksymukNatalia/NEBOclustertask/actions/workflows/build.yml)

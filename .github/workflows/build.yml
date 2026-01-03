@@ -7,7 +7,6 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -25,4 +24,4 @@ jobs:
       with:
        context:
        push: true
-       tags: ${{ secrets.DOCKERHUB_USERNAME }}/nebotaskeks${{ github.run_number }}
+       tags: ${{ secrets.DOCKERHUB_USERNAME }}/nebotaskeks:${{ github.run_number }}
