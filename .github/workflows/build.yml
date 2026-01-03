@@ -27,12 +27,7 @@ jobs:
        tags: ${{ secrets.DOCKERHUB_USERNAME }}/nebotaskeks:${{ github.run_number }}
     - name: Discord notification
       if: success()
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      uses: appleboy/discord-action@v1.2.0
+      uses: tsickert/discord-webhook@v7.0.0
       with:
-        args: |
-            ❗ Deployment ssuccess!
-            Commit: ${{ github.sha }}
-            Author: ${{ github.actor }}
-            🔗 [View workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+        content: "Test"
