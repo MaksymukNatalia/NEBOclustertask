@@ -1,0 +1,37 @@
+replicaCount: 1
+image: test
+name : user-service
+imagePullPolicy: Always
+namespace: external-secrets
+
+deployment:
+  name : user-service
+  containerPort: 8080
+
+service:
+  name : user-service
+  type: ClusterIP
+  port: 8080
+  containerPort: 8080
+
+
+mysql:
+  name: mysql
+  image: mysql
+  tier: database
+  persistentVolumeClaimName: mysql-pv-claim
+  mysqlPersistenceStorageName: mysql-persistance-storage
+
+
+externalSecretsOperator:
+  enabled: true
+  serviceAccountName: external-secrets-sa
+  roleArn: test
+
+ingressNginx:
+  name: ingress-nginx
+
+
+asg:
+  name: cluster-autoscaler
+  asgRoleArn: test
