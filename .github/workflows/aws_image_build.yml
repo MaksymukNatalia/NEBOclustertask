@@ -15,32 +15,32 @@ jobs:
       - name: Build and run tests
         run: mvn test -DskipTags=db
   build:
-    name: Build Image
-    runs-on: ubuntu-latest
     needs: run_tests
+    runs-on: ubuntu-latest
     outputs:
-      image_tag: ${{ steps.set_env.outputs.image_tag }}
+      image_tag: ${{ steps.build_image.outputs.image_tag }}
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-    - name: Build, tag, and push image to Amazon ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-        IMAGE_TAG: ${{ github.run_number }}
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "image_tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v2
+
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr
+
+      - name: Build and push image
+        id: build_image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
+          IMAGE_TAG: ${{ github.run_number }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image_tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -61,5 +61,7 @@ jobs:
           command: |
             helm install external-secrets external-secrets/external-secrets   --namespace external-secrets   --create-namespace   --set installCRDs=true --wait
             helm repo update
-            helm install my ./nebotaskchart --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }},asg.asgRoleArn=${{ secrets.roleArnASG }},image=${{ steps.build.outputs.image_tag }}
-
+            helm install my ./nebotaskchart \
+            --set image=${{ needs.build.outputs.image_tag }} \
+            --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
+            --set asg.asgRoleArn=${{ secrets.roleArnASG }}
