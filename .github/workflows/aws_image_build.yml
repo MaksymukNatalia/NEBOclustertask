@@ -69,7 +69,6 @@ jobs:
                     --set installCRDs=true \
                     --wait
                 fi
-                fi
                 helm upgrade --install my ./nebotaskchart \
                   --set image=${{ needs.build.outputs.my_image_tag }} \
                   --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
