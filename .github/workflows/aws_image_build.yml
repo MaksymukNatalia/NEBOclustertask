@@ -17,8 +17,6 @@ jobs:
   build:
     needs: run_tests
     runs-on: ubuntu-latest
-    outputs:
-      my_image_tag: ${{ steps.build_image.outputs.my_image_tag }}
     steps:
       - uses: actions/checkout@v2
 
@@ -40,12 +38,7 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "my_image_tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v2
       - name: AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -70,6 +63,6 @@ jobs:
                     --wait
                 fi
                 helm upgrade --install my ./nebotaskchart \
-                  --set image=${{ needs.build.outputs.my_image_tag }} \
+                  --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
                   --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
                   --set asg.asgRoleArn=${{ secrets.roleArnASG }}
