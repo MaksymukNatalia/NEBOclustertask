@@ -59,9 +59,16 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           command: |
-            helm install external-secrets external-secrets/external-secrets   --namespace external-secrets   --create-namespace   --set installCRDs=true --wait
-            helm repo update
-            helm install my ./nebotaskchart \
-            --set image=${{ needs.build.outputs.image_tag }} \
-            --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
-            --set asg.asgRoleArn=${{ secrets.roleArnASG }}
+                helm repo add external-secrets https://charts.external-secrets.io
+                helm repo update
+          
+                helm upgrade --install external-secrets external-secrets/external-secrets \
+                  --namespace external-secrets \
+                  --create-namespace \
+                  --set installCRDs=true \
+                  --wait
+          
+                helm upgrade --install my ./nebotaskchart \
+                  --set image=${{ needs.build.outputs.image_tag }} \
+                  --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
+                  --set asg.asgRoleArn=${{ secrets.roleArnASG }}
