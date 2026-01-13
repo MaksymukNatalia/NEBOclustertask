@@ -2,6 +2,8 @@
 
 # NEBO Cluster Task
 
+
+[![Build and push Docker image to Dockerhub](https://github.com/MaksymukNatalia/NEBOclustertask/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/MaksymukNatalia/NEBOclustertask/actions/workflows/build.yml)
 ## 📌 Overview
 
 **NEBO Cluster Task** is a technical assignment designed to demonstrate hands-on experience with containerization, cluster orchestration, and infrastructure automation.
