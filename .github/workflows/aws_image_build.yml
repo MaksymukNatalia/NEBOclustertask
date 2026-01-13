@@ -62,12 +62,13 @@ jobs:
                 helm repo add external-secrets https://charts.external-secrets.io
                 helm repo update
           
-                helm upgrade --install external-secrets external-secrets/external-secrets \
-                  --namespace external-secrets \
-                  --create-namespace \
-                  --set installCRDs=true \
-                  --wait
-          
+                if ! helm status external-secrets -n external-secrets >/dev/null 2>&1; then
+                  helm upgrade --install external-secrets external-secrets/external-secrets \
+                    --namespace external-secrets \
+                    --create-namespace \
+                    --set installCRDs=true \
+                    --wait
+                fi
                 helm upgrade --install my ./nebotaskchart \
                   --set image=${{ needs.build.outputs.image_tag }} \
                   --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
