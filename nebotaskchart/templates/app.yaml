@@ -26,7 +26,7 @@ spec:
               done
       containers:
       - name: {{ .Values.deployment.name }}
-        image: {{ .Values.image }}
+        image: {{ .Values.image | quote }}
         ports:
         - containerPort: {{ .Values.deployment.containerPort }}
         env:
