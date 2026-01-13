@@ -65,6 +65,6 @@ jobs:
                     --wait
                 fi
                 helm upgrade --install my ./nebotaskchart \
-                  --set image=${ $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG } \
+                  --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
                   --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
                   --set asg.asgRoleArn=${{ secrets.roleArnASG }}
