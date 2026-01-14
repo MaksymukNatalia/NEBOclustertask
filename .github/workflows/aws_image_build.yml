@@ -55,16 +55,18 @@ jobs:
           IMAGE_TAG: ${{ github.run_number }}
         with:
           command: |
-                if ! helm status external-secrets -n external-secrets >/dev/null 2>&1; then
-                  helm repo add external-secrets https://charts.external-secrets.io --force-update
+                if kubectl get clusterrolebinding external-secrets-crb >/dev/null 2>&1; then
+                  echo "external-secrets CRB exists, assuming operator already installed"
+                else
+                  helm repo add external-secrets https://charts.external-secrets.io
                   helm repo update
                   helm upgrade --install external-secrets external-secrets/external-secrets \
                     --namespace external-secrets \
                     --create-namespace \
                     --set installCRDs=true \
                     --wait
-
                 fi
+
                 helm upgrade --install my ./nebotaskchart \
                   --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
                   --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
