@@ -58,7 +58,7 @@ jobs:
                 if ! helm status external-secrets -n external-secrets >/dev/null 2>&1; then
                   helm repo add external-secrets https://charts.external-secrets.io
                   helm repo update
-                  helm upgrade --install external-secrets external-secrets/external-secrets \
+                  helm upgrade external-secrets external-secrets/external-secrets \
                     --namespace external-secrets \
                     --create-namespace \
                     --set installCRDs=true \
