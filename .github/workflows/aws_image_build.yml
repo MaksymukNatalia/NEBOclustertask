@@ -56,23 +56,11 @@ jobs:
         run: |
           helm repo add external-secrets https://charts.external-secrets.io
           helm repo update
-
-      - name: Install External Secrets (once, safe)
-        run: |
-          helm upgrade --install external-secrets external-secrets/external-secrets \
-                  --namespace external-secrets \
-                  --create-namespace \
-                  --set installCRDs=true \
-                  --set rbac.create=false \
-                  --wait
-
+          helm install external-secrets external-secrets/external-secrets   --namespace external-secrets   --create-namespace   --set installCRDs=true      --wait
       - name: Deploy App Helm chart
         run: |
           IMAGE_TAG=${GITHUB_RUN_NUMBER}
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY=${{ secrets.REPO_NAME }}
-          helm upgrade --install my ./nebotaskchart \
-            --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }} \
-            --set asg.asgRoleArn=${{ secrets.roleArnASG }}
+          helm upgrade --install my ./nebotaskchart   --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }}   --set asg.asgRoleArn=${{ secrets.roleArnASG }}
 
