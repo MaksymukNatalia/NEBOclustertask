@@ -59,12 +59,11 @@ jobs:
                 helm repo update
                 sleep 5
                 helm upgrade --install external-secrets external-secrets/external-secrets \
-                    --namespace external-secrets \
-                    --create-namespace \
-                    --set installCRDs=true \
-                    --wait \
-                    --force \
-                    --debug
+                  --namespace external-secrets \
+                  --set installCRDs=true \
+                  --set webhook.create=false \
+                  --wait
+
 
                 helm upgrade --install my ./nebotaskchart \
                   --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
