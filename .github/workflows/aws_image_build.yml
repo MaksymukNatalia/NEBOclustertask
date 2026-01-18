@@ -56,7 +56,7 @@ jobs:
         run: |
           helm repo add external-secrets https://charts.external-secrets.io
           helm repo update
-          helm upgrade --install external-secrets external-secrets/external-secrets  --namespace external-secrets   --create-namespace    --set installCRDs=true      --set rbac.create=false      --wait
+          helm upgrade --install external-secrets external-secrets/external-secrets  --namespace external-secrets   --create-namespace    --set installCRDs=true     --wait
       - name: Deploy App Helm chart
         run: |
           IMAGE_TAG=${GITHUB_RUN_NUMBER}
