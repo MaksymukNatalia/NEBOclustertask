@@ -1,5 +1,5 @@
 locals{
-  sm_name = "556455481835"
+  sm_name = "XXXXXXX"
 }
 resource "aws_iam_role" "EKSClusterRole" {
   name = "EKSClusterRole"
