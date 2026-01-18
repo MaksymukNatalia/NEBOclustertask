@@ -62,6 +62,7 @@ jobs:
                     --namespace external-secrets \
                     --create-namespace \
                     --set installCRDs=true \
+                    --force \
                     --wait
 
                 helm upgrade --install my ./nebotaskchart \
