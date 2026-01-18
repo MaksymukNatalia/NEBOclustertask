@@ -46,24 +46,32 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: helm deploy
-        uses: koslibpro/helm-eks-action@master
+      - name: Decode kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+
+      - name: Helm deploy
+        uses: deliverybot/helm@v1
         env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
           IMAGE_TAG: ${{ github.run_number }}
         with:
-          command: >
-            helm repo add external-secrets https://charts.external-secrets.io &&
-            helm repo update &&
-            helm upgrade --install external-secrets external-secrets/external-secrets
+          args: >
+            repo add external-secrets https://charts.external-secrets.io &&
+            repo update &&
+            upgrade --install external-secrets external-secrets/external-secrets
               --namespace external-secrets
               --create-namespace
               --set installCRDs=true
               --set rbac.create=false
               --wait &&
-            helm upgrade --install my ./nebotaskchart
+            upgrade --install my ./nebotaskchart
               --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
               --set externalSecretsOperator.roleArn=${{ secrets.roleArnSecrets }}
               --set asg.asgRoleArn=${{ secrets.roleArnASG }}
+
+          release: ''
+          namespace: ''
+          chart: ''
