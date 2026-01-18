@@ -62,8 +62,9 @@ jobs:
                     --namespace external-secrets \
                     --create-namespace \
                     --set installCRDs=true \
+                    --wait \
                     --force \
-                    --wait
+                    --debug
 
                 helm upgrade --install my ./nebotaskchart \
                   --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
