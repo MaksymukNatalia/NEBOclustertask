@@ -60,8 +60,9 @@ jobs:
                 sleep 5
                 helm upgrade --install external-secrets external-secrets/external-secrets \
                   --namespace external-secrets \
-                  --set installCRDs=true \
-                  --set webhook.create=false \
+                  --create-namespace \
+                  --set installCRDs=false \
+                  --set rbac.create=false \
                   --wait
 
 
