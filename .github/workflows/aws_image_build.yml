@@ -61,7 +61,7 @@ jobs:
                 helm upgrade --install external-secrets external-secrets/external-secrets \
                   --namespace external-secrets \
                   --create-namespace \
-                  --set installCRDs=false \
+                  --set installCRDs=true \
                   --set rbac.create=false \
                   --wait
 
